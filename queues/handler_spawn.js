@@ -56,23 +56,6 @@ module.exports.process = ( item, spawns ) => {
 			// Parameters:
 			//     x, y, room:  RoomPosition coordinates to travel to
 			//     sourceIndex: Game.getObjectById of source to dropmine on arrival to (x,y,room)
-			// Keep selecting a random spawn until we find one with at least 200 energy available
-			/*
-			while (avail < 150) {
-				spawn = undefined;
-				if (spawns[item.room] && spawns[item.room].length > 0) {
-					spawn = spawns[item.room].pop();
-				} else {
-					const bestRoom = Object.keys(spawns).reduce((best, test) => (Game.map.getRoomLinearDistance(item.room, test.room.name) < Game.map.getRoomLinearDistance(item.room, best.room.name)) ? test : best );
-					spawn = spawns[bestRoom].pop();
-				}
-				// Ran out of spawn points to choose, abort
-				if (spawn === undefined) {
-					return;
-				}
-				avail = spawn.room.energyAvailable;
-			}
-			/* */
 			spawn = find_minimum_spawn( item.room, spawns, 150 );
 			// No valid spawns, abort until next tick
 			if ( spawn === undefined ) {
@@ -93,23 +76,6 @@ module.exports.process = ( item, spawns ) => {
 		case 'hauler':
 			// Parameters:
 			//     room:        Room we'll be in charge of filling
-			// Keep selecting a random spawn until we find one with at least 100 energy available
-			/*
-			while (avail < 100) {
-				spawn = undefined;
-				if (spawns[item.room] && spawns[item.room].length > 0) {
-					spawn = spawns[item.room].pop();
-				} else {
-					const bestRoom = Object.keys(spawns).reduce((best, test) => (Game.map.getRoomLinearDistance(item.room, test.room.name) < Game.map.getRoomLinearDistance(item.room, best.room.name)) ? test : best );
-					spawn = spawns[bestRoom].pop();
-				}
-				// Ran out of spawn points to choose, abort
-				if (spawn === undefined) {
-					return;
-				}
-				avail = spawn.room.energyAvailable;
-			}
-			/* */
 			spawn = find_minimum_spawn( item.room, spawns, 150 );
 			// No valid spawns, abort until next tick
 			if ( spawn === undefined ) {

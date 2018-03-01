@@ -62,76 +62,34 @@ module.exports.loop = () => {
 		}
 
 		for ( ; ; ) {
-			let body = null;
+			const needs = {};
 			if ( ( creeps[roomIndex].length < 3 )
 				&& ( room.energyAvailable >= 250 ) ) {
-				body = [
-				  WORK
-				, CARRY
-				, MOVE
-				, MOVE
-				];
+				needs[WORK] = 1;
+				needs[CARRY] = 1;
+				needs[MOVE] = 2;
 			} else if ( ( creeps[roomIndex].length < 20 )
 				&& ( room.energyAvailable === room.energyCapacityAvailable ) ) {
-				body = [
-				  WORK
-				, CARRY
-				, MOVE
-				, MOVE
-				];
+				needs[WORK] = 1;
+				needs[CARRY] = 1;
+				needs[MOVE] = 2;
 				if ( room.energyAvailable >= 1300 ) {
-					body = [
-					  WORK
-					, WORK
-					, WORK
-					, WORK
-					, WORK
-					, CARRY
-					, CARRY
-					, CARRY
-					, CARRY
-					, CARRY
-					, CARRY
-					, CARRY
-					, CARRY
-					, CARRY
-					, MOVE
-					, MOVE
-					, MOVE
-					, MOVE
-					, MOVE
-					, MOVE
-					, MOVE
-					];
+					needs[WORK] = 5;
+					needs[CARRY] = 9;
+					needs[MOVE] = 7;
 				} else if ( room.energyAvailable >= 800 ) {
-					body = [
-					  WORK
-					, WORK
-					, WORK
-					, WORK
-					, WORK
-					, CARRY
-					, CARRY
-					, MOVE
-					, MOVE
-					, MOVE
-					, MOVE
-					];
+					needs[WORK] = 5;
+					needs[CARRY] = 2;
+					needs[MOVE] = 4;
 				} else if ( room.energyAvailable >= 550 ) {
-					body = [
-					  MOVE
-					, WORK
-					, WORK
-					, CARRY
-					, CARRY
-					, MOVE
-					, MOVE
-					, MOVE
-					];
+					needs[WORK] = 3;
+					needs[CARRY] = 2;
+					needs[MOVE] = 3;
 				}
 			}
 
-			if ( body !== null ) {
+			const body = Object.keys( needs ).reduce( ( prev, need ) => prev.concat( Array( needs[need] ).fill( need ) ), [] );
+			if ( body.length > 0 ) {
 				spawns = spawns || room.find( FIND_MY_SPAWNS, { 'filter': ( object ) => ( object.spawning === null ) } );
 				if ( spawns.length > 0 ) {
 					const spawn = spawns.pop();
