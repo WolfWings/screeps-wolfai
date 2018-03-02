@@ -1,12 +1,12 @@
 'use strict';
 
 module.exports.process = ( item ) => {
-	if ( !Game.structures.hasOwnProperty( item.id ) ) {
+	if ( !Game.structures.hasOwnProperty( item ) ) {
 		return;
 	}
-
-	const tower = Game.structures[item.id];
+	const tower = Game.structures[item];
 	const pos = tower.pos;
+
 	const hostile = pos.findClosestByRange( FIND_HOSTILE_CREEPS );
 	if ( hostile !== null ) {
 		tower.attack( hostile );

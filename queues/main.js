@@ -47,13 +47,20 @@ module.exports.loop = () => {
 			requests.add( 'haul', roomMemory.hauler );
 
 			requests.add( 'upgrade', roomMemory.upgrader );
+
+			for ( const towerIndex in roomMemory.towers ) {
+				if ( !roomMemory.towers.hasOwnProperty( towerIndex ) ) {
+					continue;
+				}
+				requests.add( 'tower', roomMemory.towers[towerIndex] );
+			}
 		}
 	}
 	endCPU['populate requests'] = Game.cpu.getUsed();
 
-	requests.purge( 'tower' ); // FIXME: Placeholder to allow code to run
-
 	// requests.debug();
+
+	// requests.purge( 'tower' ); // FIXME: Placeholder to allow code to run
 
 	startCPU['requests.process'] = Game.cpu.getUsed();
 	// Service request queues in priority order

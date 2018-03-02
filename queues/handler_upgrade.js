@@ -91,7 +91,7 @@ module.exports.process = ( item ) => {
 	if ( result === ERR_NOT_ENOUGH_RESOURCES ) {
 		const res = creep.pos.findInRange( FIND_DROPPED_RESOURCES, 1 ).filter( x => x.resourceType === RESOURCE_ENERGY );
 		if ( res.length > 0 ) {
-			creep.pickup( res[0] );
+			creep.pickup( res.reduce( ( a, x ) => a.amount <= x.amount ? a : x ) );
 		}
 	}
 };

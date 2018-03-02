@@ -59,6 +59,11 @@ module.exports.process = ( item ) => {
 			// Look for resources on the ground first, but only consider piles large enough to fill us in one shot
 			res = res.concat( room.find( FIND_DROPPED_RESOURCES ).filter( x => x.amount >= space && ( Math.abs( x.pos.x - upgraderPos.x ) > 1 || Math.abs( x.pos.y - upgraderPos.y ) > 1 ) ) );
 
+			// Okay, check for smaller kibble now
+			if ( res.length === 0 ) {
+				res = res.concat( room.find( FIND_DROPPED_RESOURCES ).filter( x => Math.abs( x.pos.x - upgraderPos.x ) > 1 || Math.abs( x.pos.y - upgraderPos.y ) > 1 ) );
+			}
+
 			// Now look for containers to loot
 			if ( res.length === 0 ) {
 				res = res.concat( room.find( FIND_STRUCTURES ).filter( x => ( x.structureType === STRUCTURE_CONTAINER ) && ( _.sum( x.store ) > 0 ) ) );

@@ -89,8 +89,7 @@ module.exports.process = ( item, spawns ) => {
 			avail -= 150;
 			needs[CARRY] = 2;
 			needs[MOVE] = 1;
-			while ( ( avail >= 150 )
-			    && ( needs[CARRY] < 15 ) ) {
+			while ( avail >= 150 ) {
 				avail -= 150;
 				needs[CARRY] += 2;
 				needs[MOVE] += 1;
