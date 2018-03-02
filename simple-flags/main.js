@@ -3,7 +3,7 @@
 // Use a Yellow/Grey flag to mark an exit leading back FROM a room to where more storage is.
 // REMEMBER TO BUILD ROADS AND EXTENSIONS! This is not an automated AI, you control construction!
 
-const repairFilter = ( object ) => ( ( object.my !== false ) && ( object.structureType !== STRUCTURE_WALL ) && ( object.structureType !== STRUCTURE_RAMPART ) && ( object.hits < object.hitsMax ) && ( object.hits < object.hitsMax - 500 ) );
+const repairFilter = object => ( ( object.my !== false ) && ( object.structureType !== STRUCTURE_WALL ) && ( object.structureType !== STRUCTURE_RAMPART ) && ( object.hits < object.hitsMax ) && ( object.hits < object.hitsMax - 500 ) );
 
 module.exports.loop = () => {
 	if ( ( Game.time % 100 ) === 0 ) {
@@ -37,8 +37,8 @@ module.exports.loop = () => {
 		creeps[roomIndex] = creeps[roomIndex] || [];
 		creeps[roomIndex].sort( ( a, b ) => ( a.ticksToLive - b.ticksToLive ) );
 		const structures = room.find( FIND_STRUCTURES );
-		const my_structures = _.filter( structures, ( object ) => ( object.my === true ) );
-		const towers = _.filter( my_structures, ( object ) => ( object.structureType === STRUCTURE_TOWER ) );
+		const my_structures = _.filter( structures, object => ( object.my === true ) );
+		const towers = _.filter( my_structures, object => ( object.structureType === STRUCTURE_TOWER ) );
 		let tanks;
 		let repair;
 		let hostile_creeps;
@@ -52,7 +52,7 @@ module.exports.loop = () => {
 					break;
 				}
 
-				wounded_creeps = wounded_creeps || _.filter( creeps[roomIndex], ( object ) => ( object.hits < object.hitsMax ) );
+				wounded_creeps = wounded_creeps || _.filter( creeps[roomIndex], object => ( object.hits < object.hitsMax ) );
 				if ( wounded_creeps.length > 0 ) {
 					tower.heal( tower.pos.findClosestByRange( wounded_creeps ) );
 					break;
@@ -90,7 +90,7 @@ module.exports.loop = () => {
 
 			const body = Object.keys( needs ).reduce( ( prev, need ) => prev.concat( Array( needs[need] ).fill( need ) ), [] );
 			if ( body.length > 0 ) {
-				spawns = spawns || room.find( FIND_MY_SPAWNS, { 'filter': ( object ) => ( object.spawning === null ) } );
+				spawns = spawns || room.find( FIND_MY_SPAWNS, { 'filter': object => ( object.spawning === null ) } );
 				if ( spawns.length > 0 ) {
 					const spawn = spawns.pop();
 					spawn.spawnCreep( body, `${room.name}:${Game.time}`, { 'room': spawn.room.name } );
@@ -116,7 +116,7 @@ module.exports.loop = () => {
 			if ( creep.memory.full ) {
 				for ( ; ; ) {
 					if ( tanks === undefined ) {
-						tanks = _.filter( my_structures, ( object ) => ( ( ( object.structureType === STRUCTURE_SPAWN ) || ( object.structureType === STRUCTURE_EXTENSION ) || ( object.structureType === STRUCTURE_TOWER ) ) && ( object.energy < object.energyCapacity ) ) );
+						tanks = _.filter( my_structures, object => ( ( ( object.structureType === STRUCTURE_SPAWN ) || ( object.structureType === STRUCTURE_EXTENSION ) || ( object.structureType === STRUCTURE_TOWER ) ) && ( object.energy < object.energyCapacity ) ) );
 					}
 					if ( tanks.length > 0 ) {
 						target = creep.pos.findClosestByRange( tanks );
@@ -152,7 +152,7 @@ module.exports.loop = () => {
 						break;
 					}
 
-					target = creep.pos.findClosestByRange( creep.room.find( FIND_FLAGS, { 'filter': ( flag ) => flag.color === COLOR_YELLOW && flag.secondaryColor === COLOR_GREY } ) );
+					target = creep.pos.findClosestByRange( creep.room.find( FIND_FLAGS, { 'filter': flag => flag.color === COLOR_YELLOW && flag.secondaryColor === COLOR_GREY } ) );
 					if ( target !== null ) {
 						result = ERR_NOT_IN_RANGE;
 						break;
@@ -164,7 +164,7 @@ module.exports.loop = () => {
 				}
 			} else {
 				for ( ; ; ) {
-					target = creep.pos.findClosestByRange( FIND_DROPPED_RESOURCES, { 'filter': ( object ) => ( object.resourceType === RESOURCE_ENERGY ) } );
+					target = creep.pos.findClosestByRange( FIND_DROPPED_RESOURCES, { 'filter': object => ( object.resourceType === RESOURCE_ENERGY ) } );
 					if ( target !== null ) {
 						result = creep.pickup( target );
 						break;
@@ -172,7 +172,7 @@ module.exports.loop = () => {
 
 					let sources = creep.room.find( FIND_SOURCES_ACTIVE );
 					if ( sources.length === 0 ) {
-						sources = creep.room.find( FIND_FLAGS, { 'filter': ( flag ) => flag.color === COLOR_YELLOW && flag.secondaryColor === COLOR_YELLOW } );
+						sources = creep.room.find( FIND_FLAGS, { 'filter': flag => flag.color === COLOR_YELLOW && flag.secondaryColor === COLOR_YELLOW } );
 					}
 					target = creep.pos.findClosestByRange( sources );
 					if ( target !== null ) {
@@ -187,7 +187,7 @@ module.exports.loop = () => {
 					if ( creep.carry.energy > 0 ) {
 						creep.memory.full = true;
 					} else {
-						target = creep.room.find( FIND_FLAGS, { 'filter': ( object ) => ( ( object.color === COLOR_RED ) && ( object.secondaryColor === COLOR_WHITE ) ) } );
+						target = creep.room.find( FIND_FLAGS, { 'filter': object => ( ( object.color === COLOR_RED ) && ( object.secondaryColor === COLOR_WHITE ) ) } );
 						if ( target.length > 0 ) {
 							target = target.pop();
 							result = ERR_NOT_IN_RANGE;
