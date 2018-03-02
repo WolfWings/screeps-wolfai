@@ -4,6 +4,7 @@
 , 'haul'
 , 'move'
 , 'spawn'
+, 'tower'
 , 'travel'
 , 'upgrade'
 ].forEach( ( handler ) => {

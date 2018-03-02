@@ -51,6 +51,8 @@ module.exports.loop = () => {
 	}
 	endCPU['populate requests'] = Game.cpu.getUsed();
 
+	requests.purge( 'tower' ); // FIXME: Placeholder to allow code to run
+
 	// requests.debug();
 
 	startCPU['requests.process'] = Game.cpu.getUsed();
@@ -77,7 +79,7 @@ module.exports.loop = () => {
 	,	'travel'
 
 		// Handle towers for defense only
-	,	'towers'
+	,	'tower'
 	].forEach( ( queue ) => {
 		startCPU[`requests.process(${queue})`] = Game.cpu.getUsed();
 		requests.process( queue, handlers[queue].setup, handlers[queue].process );
