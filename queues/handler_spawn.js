@@ -25,7 +25,8 @@ const find_minimum_spawn = ( room, spawns, required_energy ) => {
 };
 
 module.exports.setup = () => {
-	const rooms = {};  // Per-room StructureSpawn lists
+	const rooms = {};      // Per-room StructureSpawn lists
+    const panicRooms = {}; // 'rooms' without the energy check
 	for ( const spawnIndex in Game.spawns ) {
 		if ( !Game.spawns.hasOwnProperty( spawnIndex ) ) {
 			continue;
@@ -34,14 +35,17 @@ module.exports.setup = () => {
 		if ( spawn.spawning !== null ) {
 			continue;
 		}
+		const room = spawn.room.name;
+    	panicRooms[room] = panicRooms[room] || [];
+    	panicRooms[room].push( spawn );
 		if ( spawn.room.energyAvailable !== spawn.room.energyCapacityAvailable ) {
 			continue;
 		}
-		const room = spawn.room.name;
 		rooms[room] = rooms[room] || [];
 		rooms[room].push( spawn );
 	}
-	return rooms;
+
+    return ( Object.keys( rooms ).length > 0 ) ? rooms : panicRooms;
 };
 
 module.exports.process = ( item, spawns ) => {
@@ -127,5 +131,11 @@ module.exports.process = ( item, spawns ) => {
 
 	// Array.reduce across the Object.keys to build the body
 	// Trick found at https://stackoverflow.com/a/15748853
-	spawn.spawnCreep( Object.keys( needs ).reduce( ( prev, need ) => prev.concat( Array( needs[need] ).fill( need ) ), [] ), `${spawn.id}:${Game.time}` );
+	// const keepNeeds = {};
+	// Object.keys(needs).filter( ( x ) => x !== CARRY && x !== MOVE ).forEach( ( x ) => keepNeeds[x] = needs[x] );
+	spawn.spawnCreep(
+		Object.keys( needs ).reduce( ( prev, need ) => prev.concat( Array( needs[need] ).fill( need ) ), [] )
+	,	`${spawn.id}:${Game.time}`
+	// ,	{ 'memory': { 'body': keepNeeds } }
+	);
 };

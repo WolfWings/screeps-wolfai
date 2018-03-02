@@ -57,11 +57,11 @@ module.exports.process = ( item ) => {
 		if ( creep.memory.loading ) {
 			const space = creep.carryCapacity - _.sum( creep.carry );
 			// Look for resources on the ground first, but only consider piles large enough to fill us in one shot
-			res = res.concat( room.find( FIND_DROPPED_RESOURCES ).filter( ( x ) => x.amount >= space && ( Math.abs( x.pos.x - upgraderPos.x ) > 1 || Math.abs( x.pos.y - upgraderPos.y ) > 1 ) ) );
+			res = res.concat( room.find( FIND_DROPPED_RESOURCES ).filter( x => x.amount >= space && ( Math.abs( x.pos.x - upgraderPos.x ) > 1 || Math.abs( x.pos.y - upgraderPos.y ) > 1 ) ) );
 
 			// Now look for containers to loot
 			if ( res.length === 0 ) {
-				res = res.concat( room.find( FIND_STRUCTURES ).filter( ( s ) => ( s.structureType === STRUCTURE_CONTAINER ) && ( _.sum( s.store ) > 0 ) ) );
+				res = res.concat( room.find( FIND_STRUCTURES ).filter( x => ( x.structureType === STRUCTURE_CONTAINER ) && ( _.sum( x.store ) > 0 ) ) );
 			}
 
 			// If we're still out of targets then search all connected rooms for both
@@ -78,14 +78,14 @@ module.exports.process = ( item ) => {
 					}
 
 					res = res.concat( searchRoom.find( FIND_DROPPED_RESOURCES ) );
-					res = res.concat( searchRoom.find( FIND_STRUCTURES ).filter( ( s ) => ( s.structureType === STRUCTURE_CONTAINER ) && ( _.sum( s.store ) > 0 ) ) );
+					res = res.concat( searchRoom.find( FIND_STRUCTURES ).filter( x => ( x.structureType === STRUCTURE_CONTAINER ) && ( _.sum( x.store ) > 0 ) ) );
 				}
 			}
 		} else {
 			if ( creep.carry.energy > 0 ) {
-				res = res.concat( room.find( FIND_MY_STRUCTURES ).filter( ( s ) => ( ( ( s.structureType === STRUCTURE_EXTENSION ) || ( s.structureType === STRUCTURE_TOWER ) || ( s.structureType === STRUCTURE_SPAWN ) ) && ( s.energy < s.energyCapacity ) ) ) );
+				res = res.concat( room.find( FIND_MY_STRUCTURES ).filter( x => ( ( ( x.structureType === STRUCTURE_EXTENSION ) || ( x.structureType === STRUCTURE_TOWER ) || ( x.structureType === STRUCTURE_SPAWN ) ) && ( x.energy < x.energyCapacity ) ) ) );
 			} else {
-				res = res.concat( room.find( FIND_MY_STRUCTURES ).filter( ( s ) => s.structureType === STRUCTURE_STORAGE ) );
+				res = res.concat( room.find( FIND_MY_STRUCTURES ).filter( x => x.structureType === STRUCTURE_STORAGE ) );
 			}
 		}
 

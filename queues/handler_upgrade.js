@@ -27,7 +27,7 @@ module.exports.process = ( item ) => {
 	let target;
 	const csites = room.find( FIND_MY_CONSTRUCTION_SITES );
 	if ( csites.length > 0 ) {
-		const inprog = csites.filter( ( x ) => x.progress > 0 );
+		const inprog = csites.filter( x => x.progress > 0 );
 		if ( inprog.length > 0 ) {
 			target = creep.pos.findClosestByRange( inprog );
 		} else {
@@ -74,11 +74,22 @@ module.exports.process = ( item ) => {
 	if ( target.structureType === STRUCTURE_CONTROLLER ) {
 		result = creep.upgradeController( target );
 	} else {
+		creep.memory.labor = creep.memory.labor || creep.body.filter( x => x === WORK ).length;
+		const labor = Math.min( creep.carry[RESOURCE_ENERGY], creep.memory.labor ) * 5;
+		if ( target.progress + labor >= target.progressTotal ) {
+			switch ( target.structureType ) {
+				case STRUCTURE_TOWER:
+					Memory.rooms[item.room].towers = undefined; // Force re-scan next tick.
+					break;
+				default:
+					break;
+			}
+		}
 		result = creep.build( target );
 	}
 
 	if ( result === ERR_NOT_ENOUGH_RESOURCES ) {
-		const res = creep.pos.findInRange( FIND_DROPPED_RESOURCES, 1 ).filter( ( x ) => x.resourceType === RESOURCE_ENERGY );
+		const res = creep.pos.findInRange( FIND_DROPPED_RESOURCES, 1 ).filter( x => x.resourceType === RESOURCE_ENERGY );
 		if ( res.length > 0 ) {
 			creep.pickup( res[0] );
 		}

@@ -75,6 +75,9 @@ module.exports.loop = () => {
 		// Handle between-room movement
 		// TODO: Add CostMatrix-based pathing w/ roads, etc
 	,	'travel'
+
+		// Handle towers for defense only
+	,	'towers'
 	].forEach( ( queue ) => {
 		startCPU[`requests.process(${queue})`] = Game.cpu.getUsed();
 		requests.process( queue, handlers[queue].setup, handlers[queue].process );

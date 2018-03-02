@@ -47,9 +47,9 @@ const memory_update_rooms = () => {
 			Memory.rooms[room].sources = Game.rooms[room].find( FIND_SOURCES ).map( choose_open_mining_point );
 		}
 
-		Memory.rooms[room].hauler = Memory.rooms[room].hauler || { room };
+		Memory.rooms[room].hauler = Memory.rooms[room].hauler || { 'room': room };
 
-		Memory.rooms[room].upgrader = Memory.rooms[room].upgrader || { room };
+		Memory.rooms[room].upgrader = Memory.rooms[room].upgrader || { 'room': room };
 	}
 };
 
