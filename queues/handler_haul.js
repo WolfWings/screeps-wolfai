@@ -83,7 +83,7 @@ module.exports.process = ( item ) => {
 			}
 		} else {
 			if ( creep.carry.energy > 0 ) {
-				res = res.concat( room.find( FIND_MY_STRUCTURES ).filter( ( s ) => ( ( ( s.structureType === STRUCTURE_EXTENSION ) || ( s.structureType === STRUCTURE_SPAWN ) ) && ( s.energy < s.energyCapacity ) ) ) );
+				res = res.concat( room.find( FIND_MY_STRUCTURES ).filter( ( s ) => ( ( ( s.structureType === STRUCTURE_EXTENSION ) || ( s.structureType === STRUCTURE_TOWER ) || ( s.structureType === STRUCTURE_SPAWN ) ) && ( s.energy < s.energyCapacity ) ) ) );
 			} else {
 				res = res.concat( room.find( FIND_MY_STRUCTURES ).filter( ( s ) => s.structureType === STRUCTURE_STORAGE ) );
 			}
