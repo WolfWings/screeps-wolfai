@@ -26,7 +26,7 @@ const find_minimum_spawn = ( room, spawns, required_energy ) => {
 
 module.exports.setup = () => {
 	const rooms = {};      // Per-room StructureSpawn lists
-    const panicRooms = {}; // 'rooms' without the energy check
+	const panicRooms = {}; // 'rooms' without the energy check
 	for ( const spawnIndex in Game.spawns ) {
 		if ( !Game.spawns.hasOwnProperty( spawnIndex ) ) {
 			continue;
@@ -36,8 +36,8 @@ module.exports.setup = () => {
 			continue;
 		}
 		const room = spawn.room.name;
-    	panicRooms[room] = panicRooms[room] || [];
-    	panicRooms[room].push( spawn );
+		panicRooms[room] = panicRooms[room] || [];
+		panicRooms[room].push( spawn );
 		if ( spawn.room.energyAvailable !== spawn.room.energyCapacityAvailable ) {
 			continue;
 		}
@@ -89,12 +89,14 @@ module.exports.process = ( item, spawns ) => {
 			avail -= 150;
 			needs[CARRY] = 2;
 			needs[MOVE] = 1;
-			while ( avail >= 150 ) {
+			while ( ( avail >= 150 )
+			     && ( needs[CARRY] + needs[MOVE] < 48 ) ) {
 				avail -= 150;
 				needs[CARRY] += 2;
 				needs[MOVE] += 1;
 			}
-			if ( avail >= 100 ) {
+			if ( ( avail >= 100 )
+			  && ( needs[CARRY] + needs[MOVE] < 49 ) ) {
 				avail -= 100;
 				needs[CARRY] += 1;
 				needs[MOVE] += 1;
