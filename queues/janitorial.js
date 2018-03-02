@@ -50,6 +50,10 @@ const memory_update_rooms = () => {
 		Memory.rooms[room].hauler = Memory.rooms[room].hauler || { 'room': room };
 
 		Memory.rooms[room].upgrader = Memory.rooms[room].upgrader || { 'room': room };
+
+		if ( Memory.rooms[room].towers === undefined ) {
+			Memory.rooms[room].towers = Game.rooms[room].find( FIND_MY_STRUCTURES ).filter( x => x.structureType === STRUCTURE_TOWER ).map( x => x.id );
+		}
 	}
 };
 
