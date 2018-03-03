@@ -20,6 +20,13 @@ module.exports.process = ( item ) => {
 		return;
 	}
 
+	// If we can replace both miners if needed,
+	// and we're not full size already, suicide
+	if ( ( miner.body.length < 6 )
+	  && ( miner.room.energyAvailable >= 1100 ) ) {
+		miner.suicide();
+	}
+
 	if ( miner.room.name !== item.room ) {
 		requests.add( 'travel', {
 			'creep': item.miner
