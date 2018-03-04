@@ -4,7 +4,7 @@ const requests = require( 'requests' );
 
 module.exports.process = ( item ) => {
 	if ( ( item.miner === undefined )
-		|| ( Game.creeps[item.miner] === undefined ) ) {
+	  || ( Game.creeps[item.miner] === undefined ) ) {
 		requests.add( 'spawn', {
 			'type': 'miner'
 		,	'x': item.x
@@ -38,7 +38,7 @@ module.exports.process = ( item ) => {
 	}
 
 	if ( ( miner.pos.x !== item.x )
-	 || ( miner.pos.y !== item.y ) ) {
+	  || ( miner.pos.y !== item.y ) ) {
 		requests.add( 'move', {
 			'creep': item.miner
 		,	'x': item.x

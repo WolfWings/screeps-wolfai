@@ -4,7 +4,7 @@ const requests = require( 'requests' );
 
 module.exports.process = ( item ) => {
 	if ( ( item.creep === undefined )
-	 || ( Game.creeps[item.creep] === undefined ) ) {
+	  || ( Game.creeps[item.creep] === undefined ) ) {
 		requests.add( 'spawn', {
 			'type': 'hauler'
 		,	'room': item.room
@@ -50,23 +50,32 @@ module.exports.process = ( item ) => {
 	}
 
 	if ( target === null ) {
-		let res = [];
+		const res = [];
 		const upgrader = Game.creeps[Memory.rooms[item.room].upgrader.creep];
 		const upgraderPos = ( upgrader === undefined ) ? { 'x': 1000000, 'y': 1000000 } : upgrader.pos;
 
 		if ( creep.memory.loading ) {
 			const space = creep.carryCapacity - _.sum( creep.carry );
 			// Look for resources on the ground first, but only consider piles large enough to fill us in one shot
-			res = res.concat( room.find( FIND_DROPPED_RESOURCES ).filter( x => x.amount >= space && ( Math.abs( x.pos.x - upgraderPos.x ) > 1 || Math.abs( x.pos.y - upgraderPos.y ) > 1 ) ) );
+			room
+				.find( FIND_DROPPED_RESOURCES )
+				.filter( x => x.amount >= space && ( Math.abs( x.pos.x - upgraderPos.x ) > 1 || Math.abs( x.pos.y - upgraderPos.y ) > 1 ) )
+				.forEach( x => res.push( x ) );
 
 			// Okay, check for smaller kibble now
 			if ( res.length === 0 ) {
-				res = res.concat( room.find( FIND_DROPPED_RESOURCES ).filter( x => Math.abs( x.pos.x - upgraderPos.x ) > 1 || Math.abs( x.pos.y - upgraderPos.y ) > 1 ) );
+				room
+					.find( FIND_DROPPED_RESOURCES )
+					.filter( x => Math.abs( x.pos.x - upgraderPos.x ) > 1 || Math.abs( x.pos.y - upgraderPos.y ) > 1 )
+					.forEach( x => res.push( x ) );
 			}
 
 			// Now look for containers to loot
 			if ( res.length === 0 ) {
-				res = res.concat( room.find( FIND_STRUCTURES ).filter( x => ( x.structureType === STRUCTURE_CONTAINER ) && ( _.sum( x.store ) > 0 ) ) );
+				room
+					.find( FIND_STRUCTURES )
+					.filter( x => ( x.structureType === STRUCTURE_CONTAINER ) && ( _.sum( x.store ) > 0 ) )
+					.forEach( x => res.push( x ) );
 			}
 
 			// If we're still out of targets then search all connected rooms for both
@@ -82,15 +91,44 @@ module.exports.process = ( item ) => {
 						continue;
 					}
 
-					res = res.concat( searchRoom.find( FIND_DROPPED_RESOURCES ) );
-					res = res.concat( searchRoom.find( FIND_STRUCTURES ).filter( x => ( x.structureType === STRUCTURE_CONTAINER ) && ( _.sum( x.store ) > 0 ) ) );
+					searchRoom
+						.find( FIND_DROPPED_RESOURCES )
+						.forEach( x => res.push( x ) );
+
+					searchRoom
+						.find( FIND_STRUCTURES )
+						.filter( x => ( x.structureType === STRUCTURE_CONTAINER ) && ( _.sum( x.store ) > 0 ) )
+						.forEach( x => res.push( x ) );
 				}
 			}
 		} else {
 			if ( creep.carry.energy > 0 ) {
-				res = res.concat( room.find( FIND_MY_STRUCTURES ).filter( x => ( ( ( x.structureType === STRUCTURE_EXTENSION ) || ( x.structureType === STRUCTURE_TOWER ) || ( x.structureType === STRUCTURE_SPAWN ) ) && ( x.energy < x.energyCapacity ) ) ) );
+				const depots = room
+					// Find all containers for energy
+					.find( FIND_MY_STRUCTURES )
+					.filter( x => ( ( ( x.structureType === STRUCTURE_EXTENSION ) || ( x.structureType === STRUCTURE_TOWER ) || ( x.structureType === STRUCTURE_SPAWN ) ) && ( x.energy < x.energyCapacity ) ) )
+					// Add a property to cache this calculation now
+					.map( ( x ) => {
+						x.energySpace = x.energyCapacity - x.energy;
+						return x;
+					} )
+					// Sort them with least room last
+					.sort( ( a, b ) => b.energySpace - a.energySpace );
+
+				// Now we can simply keep popping the last one off the stack as long as it has
+				// a DIFFERENT space available than the first one; once those two are equal we
+				// have only the ones with the same space available left to pick nearest from.
+				while ( ( depots.length > 1 )
+				     && ( depots[0].energySpace !== depots[depots.length - 1].energySpace ) ) {
+					depots.pop();
+				}
+
+				depots.forEach( x => res.push( x ) );
 			} else {
-				res = res.concat( room.find( FIND_MY_STRUCTURES ).filter( x => x.structureType === STRUCTURE_STORAGE ) );
+				room
+					.find( FIND_MY_STRUCTURES )
+					.filter( x => x.structureType === STRUCTURE_STORAGE )
+					.forEach( x => res.push( x ) );
 			}
 		}
 
@@ -109,7 +147,7 @@ module.exports.process = ( item ) => {
 				return;
 			}
 
-			res = [upgrader];
+			res.push( upgrader );
 		}
 
 		target = creep.pos.findClosestByRange( res );
@@ -129,7 +167,7 @@ module.exports.process = ( item ) => {
 
 	// Still not there yet...
 	if ( ( Math.abs( creep.pos.x - target.pos.x ) > 1 )
-	 || ( Math.abs( creep.pos.y - target.pos.y ) > 1 ) ) {
+	  || ( Math.abs( creep.pos.y - target.pos.y ) > 1 ) ) {
 		requests.add( 'move', {
 			'creep': creep.name
 		,	'x': target.pos.x

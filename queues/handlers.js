@@ -3,6 +3,7 @@
 [ 'harvest'
 , 'haul'
 , 'move'
+, 'recycle'
 , 'spawn'
 , 'tower'
 , 'travel'

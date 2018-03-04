@@ -2,6 +2,11 @@
 
 const requests = require( 'requests' );
 
+const barrier_levels = {};
+barrier_levels[6] = 10000;
+barrier_levels[7] = 1000000;
+barrier_levels[8] = 100000000;
+
 module.exports.process = ( item ) => {
 	if ( ( item.creep === undefined )
 	  || ( Game.creeps[item.creep] === undefined ) ) {
@@ -25,16 +30,36 @@ module.exports.process = ( item ) => {
 	}
 
 	let target;
-	const csites = room.find( FIND_MY_CONSTRUCTION_SITES );
-	if ( csites.length > 0 ) {
-		const inprog = csites.filter( x => x.progress > 0 );
-		if ( inprog.length > 0 ) {
-			target = creep.pos.findClosestByRange( inprog );
-		} else {
-			target = creep.pos.findClosestByRange( csites );
+	let action;
+	for ( ; ; ) {
+		const csites = room.find( FIND_MY_CONSTRUCTION_SITES );
+		if ( csites.length > 0 ) {
+			const inprog = csites.filter( x => x.progress > 0 );
+			if ( inprog.length > 0 ) {
+				target = creep.pos.findClosestByRange( inprog );
+			} else {
+				target = creep.pos.findClosestByRange( csites );
+			}
+			action = 'build';
+			break;
 		}
-	} else {
+
+		if ( room.controller.level >= 6 ) {
+			const barricades = room
+				.find( FIND_STRUCTURES )
+				.filter( x => ( x.my && x.structureType === STRUCTURE_RAMPART ) || ( x.structureType === STRUCTURE_WALL ) )
+				.filter( x => ( x.hits < barrier_levels[room.controller.level] ) )
+				.sort( ( a, b ) => ( b.hits - a.hits ) );
+			if ( barricades.length > 0 ) {
+				target = barricades[0];
+				action = 'repair';
+				break;
+			}
+		}
+
 		target = room.controller;
+		action = 'upgradeController';
+		break;
 	}
 
 	// If there's no controller we should never have been spawned, GTFO
@@ -70,10 +95,7 @@ module.exports.process = ( item ) => {
 	// TODO: Container miner support based on RCL
 	// Add construction and repair here
 
-	let result;
-	if ( target.structureType === STRUCTURE_CONTROLLER ) {
-		result = creep.upgradeController( target );
-	} else {
+	if ( action === 'build' ) {
 		creep.memory.labor = creep.memory.labor || creep.body.filter( x => x === WORK ).length;
 		const labor = Math.min( creep.carry[RESOURCE_ENERGY], creep.memory.labor ) * 5;
 		if ( target.progress + labor >= target.progressTotal ) {
@@ -85,13 +107,13 @@ module.exports.process = ( item ) => {
 					break;
 			}
 		}
-		result = creep.build( target );
 	}
 
-	if ( result === ERR_NOT_ENOUGH_RESOURCES ) {
-		const res = creep.pos.findInRange( FIND_DROPPED_RESOURCES, 1 ).filter( x => x.resourceType === RESOURCE_ENERGY );
-		if ( res.length > 0 ) {
-			creep.pickup( res.reduce( ( a, x ) => a.amount <= x.amount ? a : x ) );
-		}
+	// const result = creep[action]( target );
+	creep[action]( target );
+
+	const res = creep.pos.findInRange( FIND_DROPPED_RESOURCES, 1 ).filter( x => x.resourceType === RESOURCE_ENERGY );
+	if ( res.length > 0 ) {
+		creep.pickup( res.reduce( ( a, x ) => a.amount <= x.amount ? a : x ) );
 	}
 };
