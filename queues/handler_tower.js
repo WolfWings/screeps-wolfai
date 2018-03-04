@@ -19,7 +19,7 @@ module.exports.process = ( item ) => {
 		return;
 	}
 
-	const damaged = pos.findClosestByRange( FIND_STRUCTURES, { 'filter': x => x.hits < Math.min( x.hitsMax, 100000 ) && ( x.my || x.structureType === STRUCTURE_ROAD ) } );
+	const damaged = pos.findClosestByRange( FIND_STRUCTURES, { 'filter': x => x.hits < ( x.hitsMax - 800 ) && x.hits < Math.min( x.hitsMax, 100000 ) && ( x.my || x.structureType === STRUCTURE_ROAD ) } );
 	if ( damaged !== null ) {
 		tower.repair( damaged );
 		return;
