@@ -31,6 +31,7 @@ module.exports.process = ( item ) => {
 
 	let target;
 	let action;
+	let range = 1;
 	for ( ; ; ) {
 		const csites = room.find( FIND_MY_CONSTRUCTION_SITES );
 		if ( csites.length > 0 ) {
@@ -41,6 +42,7 @@ module.exports.process = ( item ) => {
 				target = creep.pos.findClosestByRange( csites );
 			}
 			action = 'build';
+			range = 3;
 			break;
 		}
 
@@ -53,12 +55,14 @@ module.exports.process = ( item ) => {
 			if ( barricades.length > 0 ) {
 				target = barricades[0];
 				action = 'repair';
+				range = 3;
 				break;
 			}
 		}
 
 		target = room.controller;
 		action = 'upgradeController';
+		range = 3;
 		break;
 	}
 
@@ -75,19 +79,19 @@ module.exports.process = ( item ) => {
 		,	'x': target.pos.x
 		,	'y': target.pos.y
 		,	'room': target.room.name
-		,	'options': { 'range': 1 }
+		,	'options': { 'range': range }
 		} );
 		return;
 	}
 
 	// Still not there yet...
-	if ( ( Math.abs( creep.pos.x - target.pos.x ) > 1 )
-	 || ( Math.abs( creep.pos.y - target.pos.y ) > 1 ) ) {
+	if ( ( Math.abs( creep.pos.x - target.pos.x ) > range )
+	 || ( Math.abs( creep.pos.y - target.pos.y ) > range ) ) {
 		requests.add( 'move', {
 			'creep': creep.name
 		,	'x': target.pos.x
 		,	'y': target.pos.y
-		,	'options': { 'range': 1 }
+		,	'options': { 'range': range }
 		} );
 		return;
 	}
