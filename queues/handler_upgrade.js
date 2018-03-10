@@ -53,7 +53,21 @@ module.exports.process = ( item ) => {
 				.filter( x => ( x.hits < barrier_levels[room.controller.level] ) )
 				.sort( ( a, b ) => ( b.hits - a.hits ) );
 			if ( barricades.length > 0 ) {
-				target = barricades[0];
+				target = barricades.reduce( ( a, x ) => {
+					if ( a !== null ) {
+						return a;
+					}
+					if ( Math.abs( creep.pos.x - x.pos.x ) > 3 ) {
+						return null;
+					}
+					if ( Math.abs( creep.pos.y - x.pos.y ) > 3 ) {
+						return null;
+					}
+					return x;
+				}, null );
+				if ( target === null ) {
+					target = barricades[0];
+				}
 				action = 'repair';
 				range = 3;
 				break;
@@ -86,7 +100,7 @@ module.exports.process = ( item ) => {
 
 	// Still not there yet...
 	if ( ( Math.abs( creep.pos.x - target.pos.x ) > range )
-	 || ( Math.abs( creep.pos.y - target.pos.y ) > range ) ) {
+	  || ( Math.abs( creep.pos.y - target.pos.y ) > range ) ) {
 		requests.add( 'move', {
 			'creep': creep.name
 		,	'x': target.pos.x

@@ -45,7 +45,7 @@ module.exports.setup = () => {
 		rooms[room].push( spawn );
 	}
 
-    return ( Object.keys( rooms ).length > 0 ) ? rooms : panicRooms;
+	return ( Object.keys( rooms ).length > 0 ) ? rooms : panicRooms;
 };
 
 module.exports.process = ( item, spawns ) => {
@@ -71,7 +71,7 @@ module.exports.process = ( item, spawns ) => {
 			// needs[CARRY] = 1;
 			needs[MOVE] = 1;
 			while ( ( avail >= 100 )
-				&& ( needs[WORK] < Memory.rooms[item.room].sources[item.sourceIndex].optimal ) ) {
+			     && ( needs[WORK] < Memory.rooms[item.room].sources[item.sourceIndex].optimal ) ) {
 				avail -= 100;
 				needs[WORK] += 1;
 			}
@@ -132,11 +132,8 @@ module.exports.process = ( item, spawns ) => {
 
 	// Array.reduce across the Object.keys to build the body
 	// Trick found at https://stackoverflow.com/a/15748853
-	// const keepNeeds = {};
-	// Object.keys(needs).filter( ( x ) => x !== CARRY && x !== MOVE ).forEach( ( x ) => keepNeeds[x] = needs[x] );
-	spawn.spawnCreep(
-		Object.keys( needs ).reduce( ( prev, need ) => prev.concat( Array( needs[need] ).fill( need ) ), [] )
-	,	`${spawn.id}:${Game.time}`
-	// ,	{ 'memory': { 'body': keepNeeds } }
-	);
+	const result = spawn.spawnCreep( Object.keys( needs ).reduce( ( prev, need ) => prev.concat( Array( needs[need] ).fill( need ) ), [] ), `${spawn.id}:${Game.time}` );
+	if ( result !== OK ) {
+		console.log( `${result}: ${JSON.stringify( needs )}` );
+	}
 };

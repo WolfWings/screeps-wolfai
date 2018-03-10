@@ -56,11 +56,19 @@ module.exports.process = ( item ) => {
 
 		if ( creep.memory.loading ) {
 			const space = creep.carryCapacity - _.sum( creep.carry );
-			// Look for resources on the ground first, but only consider piles large enough to fill us in one shot
+			// Flush out tombstones first and foremost
 			room
-				.find( FIND_DROPPED_RESOURCES )
-				.filter( x => x.amount >= space && ( Math.abs( x.pos.x - upgraderPos.x ) > 1 || Math.abs( x.pos.y - upgraderPos.y ) > 1 ) )
+				.find( FIND_TOMBSTONES )
+				.filter( x => _.sum( x.carry ) > 0 )
 				.forEach( x => res.push( x ) );
+
+			// Look for resources on the ground first, but only consider piles large enough to fill us in one shot
+			if ( res.length === 0 ) {
+				room
+					.find( FIND_DROPPED_RESOURCES )
+					.filter( x => x.amount >= space && ( Math.abs( x.pos.x - upgraderPos.x ) > 1 || Math.abs( x.pos.y - upgraderPos.y ) > 1 ) )
+					.forEach( x => res.push( x ) );
+			}
 
 			// Okay, check for smaller kibble now
 			if ( res.length === 0 ) {
@@ -141,9 +149,15 @@ module.exports.process = ( item ) => {
 
 			// Upgraders scavenge, so drop our load beside it and get more
 			if ( ( Math.abs( creep.pos.x - upgrader.pos.x ) < 2 )
-			  && ( Math.abs( creep.pos.y - upgrader.pos.y ) < 2 ) ) {
+			  && ( Math.abs( creep.pos.y - upgrader.pos.y ) < 2 )
+			  && ( upgrader.fatigue === 0 ) ) {
 				creep.drop( RESOURCE_ENERGY );
 				creep.memory.loading = true;
+				return;
+			}
+
+			if ( upgrader.carry.energy >= upgrader.carryCapacity ) {
+				creep.say( 'Z' );
 				return;
 			}
 

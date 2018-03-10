@@ -25,6 +25,8 @@ module.exports = {
 	,	'FIND_STRUCTURES': true
 	,	'FIND_SOURCES': true
 	,	'FIND_SOURCES_ACTIVE': true
+	,	'FIND_TOMBSTONES': true
+	,	'OK': true
 	,	'RESOURCE_ENERGY': true
 	,	'STRUCTURE_CONTAINER': true
 	,	'STRUCTURE_CONTROLLER': true
