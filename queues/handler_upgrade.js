@@ -4,8 +4,8 @@ const requests = require( 'requests' );
 
 const barrier_levels = {};
 barrier_levels[6] = 10000;
-barrier_levels[7] = 1000000;
-barrier_levels[8] = 100000000;
+barrier_levels[7] = 100000;
+barrier_levels[8] = 1000000;
 
 module.exports.process = ( item ) => {
 	if ( ( item.creep === undefined )
