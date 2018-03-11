@@ -6,6 +6,7 @@ module.exports = {
 	}
 ,	'globals': {
 		'_': true
+	,	'ConstructionSite': true
 	,	'Game': true
 	,	'Memory': true
 	,	'RoomPosition': true
@@ -26,6 +27,7 @@ module.exports = {
 	,	'FIND_SOURCES': true
 	,	'FIND_SOURCES_ACTIVE': true
 	,	'FIND_TOMBSTONES': true
+	,	'OBSTACLE_OBJECT_TYPES': true
 	,	'OK': true
 	,	'RESOURCE_ENERGY': true
 	,	'STRUCTURE_CONTAINER': true
@@ -48,7 +50,7 @@ module.exports = {
 	,	'array-bracket-newline': 'off'
 	,	'array-bracket-spacing': [ 'error', 'always', { 'singleValue': false } ]
 	,	'array-callback-return': 'error'
-	,	'array-element-newline': 'error'
+	,	'array-element-newline': 'off'
 	,	'arrow-body-style': 'error'
 	,	'arrow-parens': [ 'error', 'as-needed', { 'requireForBlockBody': true } ]
 	,	'arrow-spacing': [ 'error', { 'after': true, 'before': true } ]

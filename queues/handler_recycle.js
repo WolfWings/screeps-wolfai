@@ -1,9 +1,10 @@
 'use strict';
 
 module.exports.process = ( item ) => {
-	if ( Game.spawns[item] === undefined ) {
-		return true;
-	}
-
-	return false;
+	console.log( JSON.stringify( item ) );
+//	if ( Game.creeps[item] === undefined ) {
+//		return true;
+//	}
+//
+//	return false;
 };

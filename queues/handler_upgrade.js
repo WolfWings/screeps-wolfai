@@ -110,6 +110,56 @@ module.exports.process = ( item ) => {
 		return;
 	}
 
+	// If we're exactly on top of a ConstructionSite, move away one
+	if ( ( creep.pos.x === target.pos.x )
+	  && ( creep.pos.y === target.pos.y )
+	  && ( target instanceof ConstructionSite ) ) {
+		const dirs = [
+			[  0, -1 ]
+		,	[  1, -1 ]
+		,	[  1,  0 ]
+		,	[  1,  1 ]
+		,	[  0,  1 ]
+		,	[ -1,  1 ]
+		,	[ -1,  0 ]
+		,	[ -1, -1 ]
+		];
+		let bestDir = 0;
+		[ 1, 2, 3, 4, 5, 6, 7, 8 ].forEach( ( testDir ) => {
+			if ( bestDir !== 0 ) {
+				return;
+			}
+			const space = new RoomPosition( creep.pos.x + dirs[testDir][0], creep.pos.y + dirs[testDir[1]], creep.room.name );
+			if ( Game.map.getTerrainAt( space ) === 'wall' ) {
+				return;
+			}
+			const contents = space.look();
+			for ( const entry in contents ) {
+				if ( contents.hasOwnProperty( entry ) === false ) {
+					continue;
+				}
+				if ( entry.type === 'terrain' ) {
+					continue;
+				}
+				if ( entry.type === 'structure' ) {
+					// FIXME: Does not handle Safe Mode and other newer complexities properly
+					// OBSTACLE_OBJECT_TYPES is not a surefire test of being an obstacle now.
+					if ( OBSTACLE_OBJECT_TYPES.includes( entry.structure.structureType ) ) {
+						return;
+					}
+				}
+			}
+			bestDir = testDir;
+		} );
+		if ( bestDir !== 0 ) {
+			requests.add( 'move', {
+				'creep': creep.name
+			,	'x': target.pos.x + dirs[bestDir][0]
+			,	'y': target.pos.y + dirs[bestDir][1]
+			} );
+		}
+	}
+
 	// TODO: Container miner support based on RCL
 	// Add construction and repair here
 
