@@ -9,6 +9,7 @@ module.exports = {
 	,	'ConstructionSite': true
 	,	'Game': true
 	,	'Memory': true
+	,	'PathFinder': true
 	,	'RoomPosition': true
 	,	'COLOR_GREY': true
 	,	'COLOR_RED': true
