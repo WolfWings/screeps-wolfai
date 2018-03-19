@@ -15,8 +15,8 @@ const memory_tidy = () => {
 	// Every 1500 cycles refresh all the cost matrixes
 	// But only ever trigger one room at a time
 	const roomsKnown = Object.keys( Memory.rooms ).sort();
-	const phase = Math.floor( ( Game.time % 1500 ) / roomsKnown.length );
-	const oldPhase = Math.floor( ( ( Game.time + 1499 ) % 1500 ) / roomsKnown.length );
+	const phase = Math.floor( ( Game.time % 1500 ) / Math.floor( 1500 / roomsKnown.length ) );
+	const oldPhase = Math.floor( ( ( Game.time + 1499 ) % 1500 ) / Math.floor( 1500 / roomsKnown.length ) );
 	if ( phase !== oldPhase ) {
 		console.log( `Refresh CostMatrix for room ${roomsKnown[phase]} on game tick ${Game.time}` );
 		Memory.rooms[roomsKnown[phase]].costs = undefined;
@@ -57,32 +57,7 @@ const memory_update_rooms = () => {
 		}
 
 		if ( Memory.rooms[room].costs === undefined ) {
-			const costs = new PathFinder.CostMatrix();
-			const constructs = Game.rooms[room].find( FIND_STRUCTURES );
-			for ( const constructIndex in constructs ) {
-				if ( !constructs.hasOwnProperty( constructIndex ) ) {
-					continue;
-				}
-				const construct = constructs[constructIndex];
-				let cost = 0xff;
-				switch ( construct.structureType ) {
-					case STRUCTURE_ROAD:
-						cost = 1;
-						break;
-					case STRUCTURE_CONTAINER:
-						cost = 0;
-						break;
-					case STRUCTURE_RAMPART:
-						cost = ( construct.my || construct.isPublic ) ? 0 : cost;
-						break;
-					default:
-						break;
-				}
-				if ( cost !== 0 ) {
-					costs.set( construct.pos.x, construct.pos.y, cost );
-				}
-			}
-			Memory.rooms[room].costs = costs.serialize();
+			Game.rooms[room].updateCosts( room );
 		}
 
 		Memory.rooms[room].hauler = Memory.rooms[room].hauler || { 'room': room };

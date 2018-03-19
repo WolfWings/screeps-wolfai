@@ -10,6 +10,7 @@ module.exports = {
 	,	'Game': true
 	,	'Memory': true
 	,	'PathFinder': true
+	,	'Room': true
 	,	'RoomPosition': true
 	,	'COLOR_GREY': true
 	,	'COLOR_RED': true
@@ -17,6 +18,7 @@ module.exports = {
 	,	'COLOR_YELLOW': true
 	,	'ERR_NOT_ENOUGH_RESOURCES': true
 	,	'ERR_NOT_IN_RANGE': true
+	,	'FIND_CREEPS': true
 	,	'FIND_DROPPED_RESOURCES': true
 	,	'FIND_FLAGS': true
 	,	'FIND_HOSTILE_CREEPS': true
