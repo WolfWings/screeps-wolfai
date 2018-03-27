@@ -15,8 +15,8 @@ module.exports.process = ( item ) => {
 		  || ( me.memory.path.y === item.y )
 		  || ( me.memory.path.room === me.room.name ) ) {
 			// Skip the check when moving intra-room.
-			if ( ( Math.min( 50, Math.max( 1, me.memory.path.oldx ) ) === me.memory.path.oldx )
-		      && ( Math.min( 50, Math.max( 1, me.memory.path.oldy ) ) === me.memory.path.oldy ) ) {
+			if ( ( Math.min( 49, Math.max( 2, me.memory.path.oldx ) ) === me.memory.path.oldx )
+			  && ( Math.min( 49, Math.max( 2, me.memory.path.oldy ) ) === me.memory.path.oldy ) ) {
 				// Are we on the expected path?
 				if ( ( me.memory.path.oldx !== me.pos.x )
 				  || ( me.memory.path.oldy !== me.pos.y ) ) {
