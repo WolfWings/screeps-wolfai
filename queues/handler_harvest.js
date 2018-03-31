@@ -28,22 +28,33 @@ module.exports.process = ( item ) => {
 	}
 
 	if ( miner.room.name !== item.room ) {
+		if ( miner.fatigue > 0 ) {
+			return;
+		}
+
 		requests.add( 'travel', {
 			'creep': item.miner
 		,	'x': item.x
 		,	'y': item.y
 		,	'room': item.room
 		} );
+
 		return;
 	}
 
 	if ( ( miner.pos.x !== item.x )
 	  || ( miner.pos.y !== item.y ) ) {
+		if ( miner.fatigue > 0 ) {
+			return;
+		}
+
 		requests.add( 'move', {
 			'creep': item.miner
 		,	'x': item.x
 		,	'y': item.y
 		} );
+
+		return;
 	}
 
 	// TODO: Container miner support based on RCL

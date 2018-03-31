@@ -88,6 +88,10 @@ module.exports.process = ( item ) => {
 
 	// Do we have to head to another room?
 	if ( target.room.name !== creep.room.name ) {
+		if ( creep.fatigue > 0 ) {
+			return;
+		}
+
 		requests.add( 'travel', {
 			'creep': creep.name
 		,	'x': target.pos.x
@@ -95,23 +99,30 @@ module.exports.process = ( item ) => {
 		,	'room': target.room.name
 		,	'options': { 'range': range }
 		} );
+
 		return;
 	}
 
 	// Still not there yet...
 	if ( ( Math.abs( creep.pos.x - target.pos.x ) > range )
 	  || ( Math.abs( creep.pos.y - target.pos.y ) > range ) ) {
+		if ( creep.fatigue > 0 ) {
+			return;
+		}
+
 		requests.add( 'move', {
 			'creep': creep.name
 		,	'x': target.pos.x
 		,	'y': target.pos.y
 		,	'options': { 'range': range }
 		} );
+
 		return;
 	}
 
 	// If we're exactly on top of a ConstructionSite, move away one
-	if ( ( creep.pos.x === target.pos.x )
+	if ( ( creep.fatigue === 0 )
+	  && ( creep.pos.x === target.pos.x )
 	  && ( creep.pos.y === target.pos.y )
 	  && ( target instanceof ConstructionSite ) ) {
 		const dirs = [
@@ -151,6 +162,7 @@ module.exports.process = ( item ) => {
 			}
 			bestDir = testDir;
 		} );
+
 		if ( bestDir !== 0 ) {
 			requests.add( 'move', {
 				'creep': creep.name
