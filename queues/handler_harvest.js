@@ -37,13 +37,14 @@ module.exports.process = ( item ) => {
 		,	'x': item.x
 		,	'y': item.y
 		,	'room': item.room
+		,	'options': { 'range': 1 }
 		} );
 
 		return;
 	}
 
-	if ( ( miner.pos.x !== item.x )
-	  || ( miner.pos.y !== item.y ) ) {
+	if ( ( Math.abs( miner.pos.x - item.x ) > 1 )
+	  || ( Math.abs( miner.pos.y - item.y ) > 1 ) ) {
 		if ( miner.fatigue > 0 ) {
 			return;
 		}
@@ -52,6 +53,7 @@ module.exports.process = ( item ) => {
 			'creep': item.miner
 		,	'x': item.x
 		,	'y': item.y
+		,	'options': { 'range': 1 }
 		} );
 
 		return;
@@ -60,6 +62,6 @@ module.exports.process = ( item ) => {
 	// TODO: Container miner support based on RCL
 	// Add construction and repair here
 
-	//	console.log('harvest - ' + item.target + ', ' + item.miner);
+	// console.log('harvest - ' + item.target + ', ' + item.miner);
 	Game.creeps[item.miner].harvest( Game.getObjectById( item.id ) );
 };

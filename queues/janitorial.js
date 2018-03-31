@@ -23,27 +23,6 @@ const memory_tidy = () => {
 	}
 };
 
-const choose_open_mining_point = ( source ) => {
-	const positions = [];
-	for ( let xo = -1; xo <= 1; xo += 1 ) {
-		for ( let yo = -1; yo <= 1; yo += 1 ) {
-			const pos = new RoomPosition( source.pos.x + xo, source.pos.y + yo, source.room.name );
-			if ( Game.map.getTerrainAt( pos ) === 'wall' ) {
-				continue;
-			}
-			positions.push( pos );
-		}
-	}
-	const position = positions[Math.floor( Math.random() * positions.length )];
-	return {
-		'x': position.x
-	,	'y': position.y
-	,	'room': position.roomName
-	,	'id': source.id
-	,	'optimal': source.energyCapacity === 4000 ? 7 : 5
-	};
-};
-
 const memory_update_rooms = () => {
 	Memory.rooms = Memory.rooms || {};
 	for ( const room in Game.rooms ) {
@@ -53,7 +32,15 @@ const memory_update_rooms = () => {
 
 		Memory.rooms[room] = Memory.rooms[room] || {};
 		if ( Memory.rooms[room].sources === undefined ) {
-			Memory.rooms[room].sources = Game.rooms[room].find( FIND_SOURCES ).map( choose_open_mining_point );
+			Memory.rooms[room].sources = Game.rooms[room].find( FIND_SOURCES ).map( ( source ) => {
+				return {
+					'x': source.pos.x
+				,	'y': source.pos.y
+				,	'room': source.pos.roomName
+				,	'id': source.id
+				,	'optimal': source.energyCapacity === 4000 ? 7 : 5
+				};
+			} );
 		}
 
 		if ( Memory.rooms[room].costs === undefined ) {

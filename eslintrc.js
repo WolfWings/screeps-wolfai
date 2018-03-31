@@ -54,7 +54,7 @@ module.exports = {
 	,	'array-bracket-spacing': [ 'error', 'always', { 'singleValue': false } ]
 	,	'array-callback-return': 'error'
 	,	'array-element-newline': 'off'
-	,	'arrow-body-style': 'error'
+	,	'arrow-body-style': [ 'error', 'as-needed', { 'requireReturnForObjectLiteral': true } ]
 	,	'arrow-parens': [ 'error', 'as-needed', { 'requireForBlockBody': true } ]
 	,	'arrow-spacing': [ 'error', { 'after': true, 'before': true } ]
 	,	'block-scoped-var': 'error'
