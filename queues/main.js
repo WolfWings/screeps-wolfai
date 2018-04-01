@@ -100,7 +100,7 @@ module.exports.loop = () => {
 	} );
 
 	endCPU['_'] = Game.cpu.getUsed();
-	const takenTotal = endCPU['_'] - startCPU['_'];
+	const takenTotal = Math.max( Number.MIN_VALUE, endCPU['_'] - startCPU['_'] );
 
 	const times = {};
 	for ( const task in startCPU ) {

@@ -21,7 +21,7 @@ module.exports.process = ( item ) => {
 				if ( ( me.memory.path.oldx !== me.pos.x )
 				  || ( me.memory.path.oldy !== me.pos.y ) ) {
 					// Nope, fell out of sync, blow away the path
-					console.log( `Creep ${item.creep} fell out of sync: ${JSON.stringify( me.pos )} versus ${JSON.stringify( me.memory.path )}` );
+					// console.log( `Creep ${item.creep} fell out of sync: ${JSON.stringify( me.pos )} versus ${JSON.stringify( me.memory.path )}` );
 					delete me.memory.path;
 				}
 			}
@@ -63,6 +63,7 @@ module.exports.process = ( item ) => {
 		}, [ '', me.pos ] );
 		// console.log( savedPath );
 
+		// console.log( `Creep ${me.name} is walking a path: ${savedPath[0]}` );
 		me.memory.path = {
 			'x': item.x
 		,	'y': item.y
@@ -80,8 +81,13 @@ module.exports.process = ( item ) => {
 		me.move( step );
 		me.memory.path.oldx = me.pos.x + xOff[step - 1];
 		me.memory.path.oldy = me.pos.y + yOff[step - 1];
-		console.log( `Creep ${me.name} expecting to be at ${me.memory.path.oldx},${me.memory.path.oldy} next tick.` );
-		me.memory.path.saved = me.memory.path.saved.slice( 1 );
+		// console.log( `Creep ${me.name} expecting to be at ${me.memory.path.oldx},${me.memory.path.oldy} next tick.` );
+		if ( me.memory.path.saved.length > 1 ) {
+			me.memory.path.saved = me.memory.path.saved.slice( 1 );
+		} else {
+			delete me.memory.path;
+			// console.log( `Creep ${me.name} walked their full path without falling out of sync.` );
+		}
 		return;
 	}
 
