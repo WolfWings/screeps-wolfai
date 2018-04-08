@@ -31,7 +31,9 @@ Room.prototype.updateCosts = ( room ) => {
 			costs.set( construct.pos.x, construct.pos.y, cost );
 		}
 	}
-	Memory.rooms[room].costs = costs.serialize().join( ',' );
+	global._temp_.rooms = global._temp_.rooms || {};
+	global._temp_.rooms[room] = global._temp_.rooms[room] || {};
+	global._temp_.rooms[room].costs = costs.serialize();
 };
 
 Room.prototype.expandCosts = ( roomName ) => {
@@ -41,12 +43,19 @@ Room.prototype.expandCosts = ( roomName ) => {
 		return;
 	}
 
-	if ( room.memory.costs === undefined ) {
+	if ( ( global._temp_.rooms === undefined )
+	  || ( global._temp_.rooms[roomName] === undefined )
+	  || ( global._temp_.rooms[roomName].costs === undefined ) ) {
 		room.updateCosts( roomName );
+		if ( ( global._temp_.rooms === undefined )
+		  || ( global._temp_.rooms[roomName] === undefined )
+		  || ( global._temp_.rooms[roomName].costs === undefined ) ) {
+			return;
+		}
 	}
 
-	console.log( `Generating per-tick CostMatrix for Room ${roomName}...` );
-	const costs = PathFinder.CostMatrix.deserialize( room.memory.costs.split( ',' ) );
+	// console.log( `Generating per-tick CostMatrix for Room ${roomName}...` );
+	const costs = PathFinder.CostMatrix.deserialize( global._temp_.rooms[roomName].costs );
 	const creeps = room.find( FIND_CREEPS );
 	for ( const creepIndex in creeps ) {
 		if ( !creeps.hasOwnProperty( creepIndex ) ) {

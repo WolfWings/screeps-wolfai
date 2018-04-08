@@ -19,7 +19,7 @@ const memory_tidy = () => {
 	const oldPhase = Math.floor( ( ( Game.time + 1499 ) % 1500 ) / Math.floor( 1500 / roomsKnown.length ) );
 	if ( phase !== oldPhase ) {
 		console.log( `Refresh CostMatrix for room ${roomsKnown[phase]} on game tick ${Game.time}` );
-		Memory.rooms[roomsKnown[phase]].costs = undefined;
+		delete global._temp_.rooms[roomsKnown[phase]].costs;
 	}
 };
 
@@ -43,7 +43,9 @@ const memory_update_rooms = () => {
 			} );
 		}
 
-		if ( Memory.rooms[room].costs === undefined ) {
+		if ( ( global._temp_.rooms === undefined )
+		  || ( global._temp_.rooms[room] === undefined )
+		  || ( global._temp_.rooms[room].costs === undefined ) ) {
 			Game.rooms[room].updateCosts( room );
 		}
 

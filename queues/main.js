@@ -1,5 +1,7 @@
 'use strict';
 
+global._temp_ = global._temp_ || {};
+
 require( 'prototypes' );
 
 const requests = require( 'requests' );
