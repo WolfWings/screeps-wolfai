@@ -6,6 +6,7 @@ Room.prototype.updateCosts = ( room ) => {
 		return;
 	}
 
+	// console.log( `Generating strucural CostMatrix for Room ${room}...` );
 	const costs = new PathFinder.CostMatrix();
 	const constructs = Game.rooms[room].find( FIND_STRUCTURES );
 	for ( const constructIndex in constructs ) {
