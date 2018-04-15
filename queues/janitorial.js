@@ -46,7 +46,7 @@ const memory_update_rooms = () => {
 		if ( ( global._temp_.rooms === undefined )
 		  || ( global._temp_.rooms[room] === undefined )
 		  || ( global._temp_.rooms[room].costs === undefined ) ) {
-			Game.rooms[room].updateCosts( room );
+			Game.rooms[room].updateCosts( );
 		}
 
 		Memory.rooms[room].hauler = Memory.rooms[room].hauler || { 'room': room };

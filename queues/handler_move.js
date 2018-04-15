@@ -44,8 +44,11 @@ module.exports.process = ( item ) => {
 				'plainCost': 2
 			,	'swampCost': 10
 			,	'roomCallback': ( roomName ) => {
+					if ( Game.rooms[roomName] === undefined ) {
+						return false;
+					}
 					if ( Game.rooms[roomName].costs === undefined ) {
-						Game.rooms[roomName].expandCosts( roomName );
+						Game.rooms[roomName].expandCosts( );
 					}
 					if ( Game.rooms[roomName].costs === undefined ) {
 						return false;

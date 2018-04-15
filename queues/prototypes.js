@@ -1,14 +1,9 @@
 'use strict';
 
-Room.prototype.updateCosts = ( room ) => {
-	if ( Game.rooms[room] === undefined ) {
-		console.log( `Unable to update room structural costs for Room ${room}: No visibility.` );
-		return;
-	}
-
-	// console.log( `Generating strucural CostMatrix for Room ${room}...` );
+Room.prototype.updateCosts = function updateCosts ( ) {
+	// console.log( `Generating strucural CostMatrix for Room ${this.name}...` );
 	const costs = new PathFinder.CostMatrix();
-	const constructs = Game.rooms[room].find( FIND_STRUCTURES );
+	const constructs = this.find( FIND_STRUCTURES );
 	for ( const constructIndex in constructs ) {
 		if ( !constructs.hasOwnProperty( constructIndex ) ) {
 			continue;
@@ -33,31 +28,25 @@ Room.prototype.updateCosts = ( room ) => {
 		}
 	}
 	global._temp_.rooms = global._temp_.rooms || {};
-	global._temp_.rooms[room] = global._temp_.rooms[room] || {};
-	global._temp_.rooms[room].costs = costs.serialize();
+	global._temp_.rooms[this.name] = global._temp_.rooms[this.name] || {};
+	global._temp_.rooms[this.name].costs = costs.serialize();
 };
 
-Room.prototype.expandCosts = ( roomName ) => {
-	const room = Game.rooms[roomName];
-	if ( room === undefined ) {
-		console.log( `Unable to expand room costs to include creeps for Room ${roomName}: No visibility.` );
-		return;
-	}
-
+Room.prototype.expandCosts = function expandCosts ( ) {
 	if ( ( global._temp_.rooms === undefined )
-	  || ( global._temp_.rooms[roomName] === undefined )
-	  || ( global._temp_.rooms[roomName].costs === undefined ) ) {
-		room.updateCosts( roomName );
+	  || ( global._temp_.rooms[this.name] === undefined )
+	  || ( global._temp_.rooms[this.name].costs === undefined ) ) {
+		this.updateCosts( );
 		if ( ( global._temp_.rooms === undefined )
-		  || ( global._temp_.rooms[roomName] === undefined )
-		  || ( global._temp_.rooms[roomName].costs === undefined ) ) {
+		  || ( global._temp_.rooms[this.name] === undefined )
+		  || ( global._temp_.rooms[this.name].costs === undefined ) ) {
 			return;
 		}
 	}
 
-	// console.log( `Generating per-tick CostMatrix for Room ${roomName}...` );
-	const costs = PathFinder.CostMatrix.deserialize( global._temp_.rooms[roomName].costs );
-	const creeps = room.find( FIND_CREEPS );
+	// console.log( `Generating per-tick CostMatrix for Room ${this.name}...` );
+	const costs = PathFinder.CostMatrix.deserialize( global._temp_.rooms[this.name].costs );
+	const creeps = this.find( FIND_CREEPS );
 	for ( const creepIndex in creeps ) {
 		if ( !creeps.hasOwnProperty( creepIndex ) ) {
 			continue;
@@ -66,5 +55,5 @@ Room.prototype.expandCosts = ( roomName ) => {
 		costs.set( creep.pos.x, creep.pos.y, 0xFF );
 	}
 
-	room.costs = costs;
+	this.costs = costs;
 };
