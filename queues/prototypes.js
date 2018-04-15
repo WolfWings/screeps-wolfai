@@ -17,7 +17,7 @@ Room.prototype.updateCosts = ( room ) => {
 		let cost = 0xff;
 		switch ( construct.structureType ) {
 			case STRUCTURE_ROAD:
-				cost = 1;
+				cost = Math.max( 1, costs.get( construct.pos.x, construct.pos.y ) );
 				break;
 			case STRUCTURE_CONTAINER:
 				cost = 0;
