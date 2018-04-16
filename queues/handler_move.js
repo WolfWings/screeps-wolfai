@@ -11,9 +11,12 @@ module.exports.process = ( item ) => {
 
 	// Verify we're still on the expected path.
 	if ( me.memory.path !== undefined ) {
-		if ( ( me.memory.path.x === item.x )
-		  || ( me.memory.path.y === item.y )
-		  || ( me.memory.path.room === me.room.name ) ) {
+		if ( ( me.memory.path.x !== item.x )
+		  || ( me.memory.path.y !== item.y )
+		  || ( me.memory.path.room !== me.room.name ) ) {
+			// Different end goal, blow away the path
+			delete me.memory.path;
+		} else {
 			// Skip the check when moving intra-room.
 			if ( ( Math.min( 49, Math.max( 2, me.memory.path.oldx ) ) === me.memory.path.oldx )
 			  && ( Math.min( 49, Math.max( 2, me.memory.path.oldy ) ) === me.memory.path.oldy ) ) {
@@ -25,9 +28,6 @@ module.exports.process = ( item ) => {
 					delete me.memory.path;
 				}
 			}
-		} else {
-			// Different end goal, blow away the path
-			delete me.memory.path;
 		}
 	}
 
