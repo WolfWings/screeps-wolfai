@@ -1,6 +1,6 @@
 'use strict';
 
-const find_minimum_spawn = ( room, spawns, required_energy ) => {
+const find_minimum_spawn = function find_minimum_spawn ( room, spawns, required_energy ) {
 	let spawn;
 	for ( ;; ) {
 		spawn = undefined;
@@ -24,7 +24,7 @@ const find_minimum_spawn = ( room, spawns, required_energy ) => {
 	}
 };
 
-module.exports.setup = () => {
+module.exports.setup = function handler_spawn_setup () {
 	const rooms = {};      // Per-room StructureSpawn lists
 	const panicRooms = {}; // 'rooms' without the energy check
 	for ( const spawnIndex in Game.spawns ) {
@@ -48,7 +48,7 @@ module.exports.setup = () => {
 	return ( Object.keys( rooms ).length > 0 ) ? rooms : panicRooms;
 };
 
-module.exports.process = ( item, spawns ) => {
+module.exports.process = function handler_spawn_process ( item, spawns ) {
 	let spawn;
 	let avail = 0;
 	const needs = {};

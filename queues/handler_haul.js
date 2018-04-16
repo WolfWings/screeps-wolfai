@@ -2,7 +2,7 @@
 
 const requests = require( 'requests' );
 
-module.exports.process = ( item ) => {
+module.exports.process = function handler_haul ( item ) {
 	if ( ( item.creep === undefined )
 	  || ( Game.creeps[item.creep] === undefined ) ) {
 		requests.add( 'spawn', {

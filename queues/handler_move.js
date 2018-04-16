@@ -1,13 +1,11 @@
 'use strict';
 
-module.exports.process = ( item ) => {
+module.exports.process = function handler_move ( item ) {
 	const me = Game.creeps[item.creep];
 
 	if ( me.fatigue > 0 ) {
 		return;
 	}
-
-	const goal = new RoomPosition( item.x, item.y, me.room.name );
 
 	// Verify we're still on the expected path.
 	if ( me.memory.path !== undefined ) {
@@ -31,14 +29,17 @@ module.exports.process = ( item ) => {
 		}
 	}
 
-	if ( me.memory.path === undefined ) {
-		const range = ( item.options && item.options.range ) ? item.options.range : 0;
-
+	if ( ( me.memory.path === undefined )
+	  || ( me.memory.path.saved.length < 1 ) ) {
+		if ( ( me.memory.path !== undefined )
+		  && ( me.memory.path.saved.length < 1 ) ) {
+			// console.log( `Creep ${me.name} walked their full path without falling out of sync.` );
+		}
 		const ret = PathFinder.search(
 			me.pos
 		,	{
-				'pos': goal
-			,	'range': range
+				'pos': new RoomPosition( item.x, item.y, me.room.name )
+			,	'range': ( item.options && item.options.range ) ? item.options.range : 0
 			}
 		,	{
 				'plainCost': 2
@@ -64,7 +65,6 @@ module.exports.process = ( item ) => {
 			memory[1] = next;
 			return memory;
 		}, [ '', me.pos ] );
-		// console.log( savedPath );
 
 		// console.log( `Creep ${me.name} is walking a path: ${savedPath[0]}` );
 		me.memory.path = {
@@ -85,14 +85,7 @@ module.exports.process = ( item ) => {
 		me.memory.path.oldx = me.pos.x + xOff[step - 1];
 		me.memory.path.oldy = me.pos.y + yOff[step - 1];
 		// console.log( `Creep ${me.name} expecting to be at ${me.memory.path.oldx},${me.memory.path.oldy} next tick.` );
-		if ( me.memory.path.saved.length > 1 ) {
-			me.memory.path.saved = me.memory.path.saved.slice( 1 );
-		} else {
-			delete me.memory.path;
-			// console.log( `Creep ${me.name} walked their full path without falling out of sync.` );
-		}
+		me.memory.path.saved = me.memory.path.saved.slice( 1 );
 		return;
 	}
-
-	me.moveTo( goal, item.options || {} );
 };

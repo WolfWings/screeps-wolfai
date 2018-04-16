@@ -7,7 +7,7 @@ barrier_levels[6] = 10000;
 barrier_levels[7] = 100000;
 barrier_levels[8] = 1000000;
 
-module.exports.process = ( item ) => {
+module.exports.process = function handler_upgrade ( item ) {
 	if ( ( item.creep === undefined )
 	  || ( Game.creeps[item.creep] === undefined ) ) {
 		requests.add( 'spawn', {

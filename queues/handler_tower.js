@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports.process = ( item ) => {
+module.exports.process = function handler_tower ( item ) {
 	if ( !Game.structures.hasOwnProperty( item ) ) {
 		return;
 	}

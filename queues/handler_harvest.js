@@ -2,7 +2,7 @@
 
 const requests = require( 'requests' );
 
-module.exports.process = ( item ) => {
+module.exports.process = function handler_harvest ( item ) {
 	if ( ( item.miner === undefined )
 	  || ( Game.creeps[item.miner] === undefined ) ) {
 		requests.add( 'spawn', {
